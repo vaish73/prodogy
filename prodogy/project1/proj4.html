@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: #0e0e0e;
+      color: #fff;
+      line-height: 1.6;
+    }
+    header {
+      background: linear-gradient(135deg, #2a2a2a, #111);
+      padding: 80px 20px;
+      text-align: center;
+    }
+    header img {
+      width: 150px;
+      border-radius: 50%;
+      margin-bottom: 20px;
+    }
+    header h1 {
+      font-size: 3rem;
+      font-weight: 600;
+    }
+    header p {
+      font-size: 1.2rem;
+      margin-top: 10px;
+      color: #ccc;
+    }
+    section {
+      padding: 60px 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #444;
+      display: inline-block;
+    }
+    .about, .projects, .contact {
+      margin-bottom: 50px;
+    }
+    .about p, .contact p {
+      font-size: 1.1rem;
+      color: #ccc;
+    }
+    .projects-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .project {
+      background: #1a1a1a;
+      padding: 20px;
+      border-radius: 10px;
+      transition: transform 0.3s ease;
+    }
+    .project:hover {
+      transform: translateY(-5px);
+    }
+    .project h3 {
+      margin-bottom: 10px;
+      color: #00eaff;
+    }
+    .project p {
+      color: #aaa;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="https://via.placeholder.com/150" alt="Your Name">
+    <h1>Hi, I'm vaishnav</h1>
+    <p>Web Developer | UI/UX Enthusiast | JavaScript Ninja</p>
+  </header>
+
+  <section class="about">
+    <h2>About Me</h2>
+    <p>
+      I am a passionate web developer with a background in computer science and a keen eye for design. I love building responsive, user-friendly websites and applications that solve real-world problems.
+      I hold a B.Sc. in Computer Science and have worked on numerous freelance and professional projects across different industries.
+    </p>
+  </section>
+
+  <section class="projects">
+    <h2>Projects</h2>
+    <div class="projects-list">
+      <div class="project">
+        <h3>Portfolio Website</h3>
+        <p>A modern personal portfolio built with HTML, CSS, and JavaScript to showcase my work and skills.</p>
+      </div>
+      <div class="project">
+        <h3>Weather App</h3>
+        <p>A dynamic weather forecast web application using OpenWeatherMap API and JavaScript.</p>
+      </div>
+      <div class="project">
+        <h3>Task Manager</h3>
+        <p>A full-stack task management tool built with React and Firebase for real-time updates.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact">
+    <h2>Contact</h2>
+    <p>If you'd like to work together or just want to connect, feel free to reach out to me at <strong>cvaishnav744@gmail.com</strong></p>
+  </section>
+</body>
+</html>

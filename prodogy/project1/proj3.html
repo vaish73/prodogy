@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Galactic Tic-Tac-Toe</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(ellipse at center, #0a0a0a, #000);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    h1 {
+      margin-top: 20px;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 10px;
+      margin: 20px;
+    }
+
+    .cell {
+      width: 100px;
+      height: 100px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      cursor: pointer;
+      transition: background 0.3s;
+      position: relative;
+      backdrop-filter: blur(4px);
+    }
+
+    .cell:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .X {
+      color: #00ffe5;
+      text-shadow: 0 0 10px #00ffe5;
+    }
+
+    .O {
+      color: #ff4dfb;
+      text-shadow: 0 0 10px #ff4dfb;
+    }
+
+    canvas#stars {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+    #effect {
+      font-size: 4rem;
+      margin-top: 10px;
+      animation: fadePop 1s ease-in-out;
+    }
+
+    @keyframes fadePop {
+      0% { opacity: 0; transform: scale(0.5); }
+      50% { opacity: 1; transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    .restart-btn {
+      padding: 10px 20px;
+      background: #222;
+      border: 1px solid #666;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    .restart-btn:hover {
+      background: #444;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="stars"></canvas>
+
+  <h1>Galactic Tic-Tac-Toe</h1>
+  <div class="board" id="board"></div>
+  <div id="effect"></div>
+  <button class="restart-btn" onclick="startGame()">Restart</button>
+
+  <script>
+    const boardElement = document.getElementById('board');
+    const effectDiv = document.getElementById('effect');
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+
+    let board, currentPlayer, gameOver = false;
+    const winCombos = [
+      [0,1,2],[3,4,5],[6,7,8],
+      [0,3,6],[1,4,7],[2,5,8],
+      [0,4,8],[2,4,6]
+    ];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    const stars = [];
+    for (let i = 0; i < 100; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.5 + 0.5,
+        alpha: Math.random(),
+        dx: Math.random() * 0.3,
+        dy: Math.random() * 0.3
+      });
+    }
+
+    function animateStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      stars.forEach(s => {
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, 2 * Math.PI);
+        ctx.fillStyle = `rgba(255, 255, 255, ${s.alpha})`;
+        ctx.fill();
+        s.alpha += (Math.random() - 0.5) * 0.05;
+        if (s.alpha < 0) s.alpha = 0.1;
+        if (s.alpha > 1) s.alpha = 1;
+      });
+      requestAnimationFrame(animateStars);
+    }
+    animateStars();
+
+    function startGame() {
+      board = Array(9).fill('');
+      currentPlayer = 'X';
+      gameOver = false;
+      effectDiv.textContent = '';
+      boardElement.innerHTML = '';
+      board.forEach((_, i) => {
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
+        cell.addEventListener('click', () => handleMove(i, cell));
+        boardElement.appendChild(cell);
+      });
+    }
+
+    function handleMove(i, cell) {
+      if (gameOver || board[i]) return;
+      board[i] = currentPlayer;
+      cell.textContent = currentPlayer;
+      cell.classList.add(currentPlayer);
+      if (checkWin()) {
+        gameOver = true;
+        triggerWinEffect(currentPlayer);
+      } else if (board.every(x => x)) {
+        gameOver = true;
+        effectDiv.innerHTML = '👎 Draw!';
+      } else {
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+      }
+    }
+
+    function checkWin() {
+      return winCombos.some(combo => {
+        const [a, b, c] = combo;
+        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+          combo.forEach(idx => {
+            boardElement.children[idx].style.background = 'rgba(255,255,255,0.2)';
+          });
+          return true;
+        }
+        return false;
+      });
+    }
+
+    function triggerWinEffect(winner) {
+      effectDiv.textContent = '🌟 ' + winner + ' Wins! 🌟';
+      for (let i = 0; i < 50; i++) {
+        stars.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          r: Math.random() * 2 + 1,
+          alpha: 1,
+          dx: Math.random() - 0.5,
+          dy: Math.random() - 0.5
+        });
+      }
+    }
+
+    // Start on load
+    startGame();
+  </script>
+
+</body>
+</html>
+

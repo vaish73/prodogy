@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #2c3e50, #3498db);
+      color: #fff;
+      text-align: center;
+      padding: 50px;
+      overflow: hidden;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px;
+    }
+    #weather {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      position: relative;
+      z-index: 2;
+    }
+    .animation {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .cloud, .rain, .storm {
+      position: absolute;
+      background-repeat: no-repeat;
+      background-size: contain;
+      opacity: 0.5;
+      animation: moveClouds 60s linear infinite;
+    }
+    .cloud {
+      width: 200px;
+      height: 100px;
+      background-image: url('https://i.ibb.co/Vg4KffF/cloud.png');
+      top: 10%;
+    }
+    .rain {
+      width: 10px;
+      height: 30px;
+      background-image: url('https://i.ibb.co/x3Njtdx/rain-drop.png');
+      top: 30%;
+      animation: fall 2s linear infinite;
+    }
+    .storm {
+      width: 100px;
+      height: 100px;
+      background-image: url('https://i.ibb.co/7V4bJ8C/lightning.png');
+      top: 40%;
+      animation: flash 3s ease-in-out infinite;
+    }
+    @keyframes moveClouds {
+      0% { left: -200px; }
+      100% { left: 100%; }
+    }
+    @keyframes fall {
+      0% { top: -30px; opacity: 0; }
+      100% { top: 100%; opacity: 1; }
+    }
+    @keyframes flash {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🌦 Weather App</h1>
+  <input type="text" id="locationInput" placeholder="Enter city name">
+  <button onclick="getWeather()">Get Weather</button>
+  <div id="weather"></div>
+
+  <div class="animation">
+    <div class="cloud" style="top: 10%; left: 0;"></div>
+    <div class="cloud" style="top: 20%; left: 20%; animation-delay: 5s;"></div>
+    <div class="rain" style="left: 50%;"></div>
+    <div class="storm" style="left: 70%;"></div>
+  </div>
+
+  <script>
+    const apiKey = 'YOUR_API_KEY'; // Replace with your OpenWeatherMap API key
+
+    async function getWeather() {
+      const location = document.getElementById('locationInput').value;
+      const weatherDiv = document.getElementById('weather');
+
+      if (!location) {
+        weatherDiv.innerHTML = 'Please enter a location.';
+        return;
+      }
+
+      try {
+        const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=${apiKey}`);
+        const data = await res.json();
+
+        if (data.cod !== 200) {
+          weatherDiv.innerHTML = `Error: ${data.message}`;
+        } else {
+          weatherDiv.innerHTML = `
+            <h2>Weather in ${data.name}</h2>
+            <p>🌡 Temperature: ${data.main.temp}°C</p>
+            <p>☁️ Condition: ${data.weather[0].description}</p>
+            <p>💨 Wind Speed: ${data.wind.speed} m/s</p>
+          `;
+        }
+      } catch (error) {
+        weatherDiv.innerHTML = 'Failed to fetch weather data.';
+      }
+    }
+  </script>
+
+</body>
+</html>
